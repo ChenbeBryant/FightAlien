@@ -5,32 +5,123 @@ class Bullet(Sprite):
 
     def __init__(self,ai_game):
         super().__init__()
-        self.wuqi=0
+        self.shanbi = True
+        self.time = -1
+        self.speed = ai_game.ship.bul_speed
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        self.image = pygame.image.load('images/zidan.png')
-        self.a=-1
-        self.rect1 = self.image.get_rect()
-        self.rect = pygame.Rect(0, 0, self.settings.bullet_width,self.settings.bullet_height)
-        self.rect1.midbottom = ai_game.ship.rect.midtop
-        self.rect.midbottom = ai_game.ship.rect.midtop
-        self.y1 = float(self.rect1.y)
-        self.y = float(self.rect.y)
 
     def update(self):
-        self.y -= self.settings.bullet_speed
+        self.y -= self.speed
         self.rect.y = self.y
-        self.y1 -= self.settings.bullet_speed
-        self.rect1.y = self.y1
-        if self.wuqi == 0:
-            self.image = pygame.image.load('images/zidan.png')
-        elif self.wuqi == 1:
-            self.image = pygame.image.load('images/zidan2.png')
 
     def draw_bullet(self):
-        if self.a==1:
-            pygame.draw.rect(self.screen, self.settings.bullet_color, self.rect)
-        elif self.a == 0:
-            self.screen.blit(self.image, self.rect1)
+        self.screen.blit(self.image, self.rect)
 
 
+
+
+
+class Bullet1(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.shanbi = True
+        self.time = -1
+        self.name='b1'
+        self.color=self.settings.bullet_color
+        self.rect = pygame.Rect(0, 0, self.settings.bullet_width,self.settings.bullet_height)
+        self.rect.midbottom = ai_game.ship.rect.midtop
+        self.y = float(self.rect.y)
+    def draw_bullet(self):
+        pygame.draw.rect(self.screen, self.color, self.rect)
+
+class Bullet2(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.name = 'b2'
+        self.speed = ai_game.ship.bul_speed*10
+        self.image = ai_game.settings.bullet2_image
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = ai_game.ship.rect.midtop
+        self.y = float(self.rect.y)
+
+class Bullet3(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.name = 'b3'
+        self.speed = ai_game.ship.bul_speed//2
+        self.image = ai_game.settings.bullet3_image
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = ai_game.ship.rect.midtop
+        self.y = float(self.rect.y)
+
+
+class Bullet4(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.name = 'b4'
+        self.speed = ai_game.ship.bul_speed*5
+        self.image = pygame.image.load('images/burn0.png')
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = ai_game.ship.rect.midtop
+        self.y = float(self.rect.y)
+
+class Bullet5(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.shanbi = True
+        self.time = -1
+        self.name = 'b5'
+        self.image = pygame.image.load('images/jiguang.png')
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = ai_game.ship.rect.midtop
+        self.y = float(self.rect.y)
+
+class Bullet6(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.aliens = ai_game.aliens
+        self.name = 'feiji'
+        self.image = self.settings.feiji
+        self.rect = self.image.get_rect()
+        self.rect.right = self.settings.rect.left
+        self.avg = 0
+        for alien in self.aliens:
+            self.avg+=alien.rect.y
+        self.avg /= len(self.aliens)
+        self.rect.top = self.avg
+    def update(self):
+        self.rect.x+=5
+
+class Bullet7(Bullet):
+
+    def __init__(self,ai_game):
+        super().__init__(ai_game)
+        self.tp = 0
+        self.name='b7'
+        self.color=self.settings.bullet_color
+        self.height = self.settings.bullet_height
+        self.width = self.settings.bullet_width
+        self.rect = pygame.Rect(0, 0, self.width,self.height)
+        self.ship = ai_game.ship
+        self.ship1 = ai_game.ship1
+        self.rect.midbottom = ai_game.ship.rect.midtop
+    def update(self):
+        if self.height < self.settings.rect.height:
+            self.height += self.speed
+        if self.height+2 > self.settings.rect.height:
+            if self.width < self.settings.bullet_width * 10:
+                self.width += 1
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
+        if self.tp == 0:
+            self.rect.midbottom = self.ship.rect.midtop
+        elif self.tp == 1 :
+            self.rect.midbottom = self.ship1.rect.midtop
+    def draw_bullet(self):
+        pygame.draw.rect(self.screen, self.color, self.rect)
